@@ -533,6 +533,7 @@
         // COLE SUA LISTA M3U AQUI
         // ============================================
         const m3uContent = `
+
         #EXT-X-SESSION-DATA:DATA-ID="com.xui.1_5_5r2"
 #EXTINF:-1 tvg-name="Dom Pixote S01E01" tvg-logo="" group-title="Séries | Animações e Desenhos",Dom Pixote S01E01
 http://ban.dyn-alias.org:80/series/FERNAND02026/678174667/605874.mp4
@@ -7385,6 +7386,7 @@ http://ban.dyn-alias.org:80/series/FERNAND02026/678174667/934040.mp4
 #EXTINF:-1 tvg-name="O Gato Prendado está Deprimido Hoje de Novo [L] S01E12" tvg-logo="http://timg.bdta.pro/t/p/w600_and_h900_bestv2/mc7VmEzYWnXcRRPJuLAXtrXUfI9.jpg" group-title="Séries | Animes",O Gato Prendado está Deprimido Hoje de Novo [L] S01E12
 http://ban.dyn-alias.org:80/series/FERNAND02026/678174667/934052.mp4
 
+
         `.trim();
 
         // ============================================
@@ -7490,25 +7492,9 @@ http://ban.dyn-alias.org:80/series/FERNAND02026/678174667/934052.mp4
         }
 
         // ============================================
-        // CHECK IMAGE
-        // ============================================
-        function checkImage(url) {
-            return new Promise((resolve) => {
-                if (!url) {
-                    resolve(false);
-                    return;
-                }
-                const img = new Image();
-                img.onload = () => resolve(true);
-                img.onerror = () => resolve(false);
-                img.src = url;
-            });
-        }
-
-        // ============================================
         // RENDER CONTENT
         // ============================================
-        async function renderContent(items) {
+        function renderContent(items) {
             const grid = document.getElementById('contentGrid');
             grid.innerHTML = '';
             
@@ -7522,15 +7508,18 @@ http://ban.dyn-alias.org:80/series/FERNAND02026/678174667/934052.mp4
                 return;
             }
             
-            for (const item of items) {
+            items.forEach(item => {
                 const card = document.createElement('div');
                 card.className = 'content-card';
                 
-                const hasImage = await checkImage(item.logo);
-                
-                if (hasImage) {
+                // Try to load image, fallback to placeholder if it fails
+                if (item.logo && item.logo.trim() !== '') {
                     card.innerHTML = `
-                        <img src="${item.logo}" alt="${item.name}" loading="lazy">
+                        <img src="${item.logo}" 
+                             alt="${item.name}" 
+                             loading="lazy"
+                             onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                        <div class="placeholder" style="display:none;">${item.name}</div>
                         ${item.type === 'series' ? '<div class="series-badge">SÉRIE</div>' : ''}
                     `;
                 } else {
@@ -7549,7 +7538,7 @@ http://ban.dyn-alias.org:80/series/FERNAND02026/678174667/934052.mp4
                 };
                 
                 grid.appendChild(card);
-            }
+            });
         }
 
         // ============================================
