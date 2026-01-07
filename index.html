@@ -476,7 +476,7 @@
         <div class="nav-links">
             <div class="nav-link active" data-tab="all" onclick="switchTab('all')">Início</div>
             <div class="nav-link" data-tab="movies" onclick="switchTab('movies')">Filmes</div>
-            <div class="nav-link" data-tab="series" onclick="switchTab('series')">Séries/Animes</div>
+            <div class="nav-link" data-tab="series" onclick="switchTab('series')">Séries</div>
         </div>
         <div class="search-box">
             <input type="text" class="search-input" id="searchInput" placeholder="Buscar títulos..." onkeyup="searchContent()">
@@ -7543,6 +7543,38 @@ http://ban.dyn-alias.org:80/series/FERNAND02026/678174667/934052.mp4
 
         // ============================================
         // FILTER CONTENT
+
+
+
+
+        function carregarLista(textoM3U) {
+    const linhas = textoM3U.split('\n');
+    const itens = [];
+    
+    for (let i = 0; i < linhas.length; i++) {
+        if (linhas[i].startsWith('#EXTINF')) {
+            const infoLinha = linhas[i];
+            const urlVideo = linhas[i + 1] ? linhas[i + 1].trim() : '';
+
+            // REGEX MÁGICA: Extrai o conteúdo entre aspas após tvg-logo
+            const logoMatch = infoLinha.match(/tvg-logo="([^"]*)"/);
+            const nomeMatch = infoLinha.match(/,(.*)$/);
+            const grupoMatch = infoLinha.match(/group-title="([^"]*)"/);
+
+            const item = {
+                name: nomeMatch ? nomeMatch[1].trim() : "Sem nome",
+                logo: logoMatch ? logoMatch[1] : "",
+                url: urlVideo,
+                // Define se é série se houver a palavra "Série" no grupo ou nome
+                type: infoLinha.toLowerCase().includes('series') ? 'series' : 'movie'
+            };
+
+            itens.push(item);
+        }
+    }
+    renderizarCards(itens); // Chama a função que cria o HTML
+}
+        
         // ============================================
         function getFilteredContent() {
             let filtered = allContent;
