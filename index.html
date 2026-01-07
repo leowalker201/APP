@@ -7513,38 +7513,6 @@ http://ban.dyn-alias.org:80/series/FERNAND02026/678174667/934052.mp4
                 card.className = 'content-card';
                 
                 // Try to load image, fallback to placeholder if it fails
-                if (item.logo && item.logo.trim() !== '') {
-                    card.innerHTML = `
-                        <img src="${item.logo}" 
-                             alt="${item.name}" 
-                             loading="lazy"
-                             onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                        <div class="placeholder" style="display:none;">${item.name}</div>
-                        ${item.type === 'series' ? '<div class="series-badge">SÉRIE</div>' : ''}
-                    `;
-                } else {
-                    card.innerHTML = `
-                        <div class="placeholder">${item.name}</div>
-                        ${item.type === 'series' ? '<div class="series-badge">SÉRIE</div>' : ''}
-                    `;
-                }
-                
-                card.onclick = () => {
-                    if (item.type === 'series') {
-                        showEpisodes(item);
-                    } else {
-                        playVideo(item.name, item.url);
-                    }
-                };
-                
-                grid.appendChild(card);
-            });
-        }
-
-        // ============================================
-        // FILTER CONTENT
-
-
 
 
         function carregarLista(textoM3U) {
