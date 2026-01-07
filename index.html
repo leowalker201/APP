@@ -5,122 +5,86 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BILOSO FLIX</title>
     <style>
+        :root { --primary: #E50914; --bg: #141414; --card-bg: #2a2a2a; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: 'Helvetica Neue', Arial, sans-serif;
-            background-color: #141414;
-            color: #fff;
-            overflow-x: hidden;
-        }
+        body { font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: var(--bg); color: #fff; overflow-x: hidden; }
 
         /* NAVBAR */
-        .navbar {
-            position: fixed;
-            top: 0; width: 100%;
-            padding: 15px 50px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: linear-gradient(to bottom, rgba(0,0,0,0.9), transparent);
-            z-index: 1000;
-        }
-        .navbar-logo { color: #E50914; font-size: 30px; font-weight: bold; }
-        
-        #search-input {
-            background: rgba(0,0,0,0.6);
-            border: 1px solid #fff;
-            color: #fff;
-            padding: 10px 15px;
-            border-radius: 4px;
-            width: 300px;
-            outline: none;
-        }
+        .navbar { position: fixed; top: 0; width: 100%; padding: 15px 50px; display: flex; align-items: center; background: rgba(0,0,0,0.9); z-index: 1000; gap: 30px; }
+        .logo { color: var(--primary); font-size: 28px; font-weight: bold; text-decoration: none; }
+        .nav-links { display: flex; gap: 20px; list-style: none; flex-grow: 1; }
+        .nav-links li { cursor: pointer; font-size: 14px; color: #e5e5e5; transition: 0.3s; }
+        .nav-links li:hover, .nav-links li.active { color: #fff; font-weight: bold; }
+        #search-input { background: #141414; border: 1px solid #333; color: #fff; padding: 8px 15px; border-radius: 4px; width: 250px; }
 
-        /* HERO */
-        .hero {
-            height: 70vh;
-            background: linear-gradient(to bottom, rgba(0,0,0,0.2), #141414),
-                        url('https://raw.githubusercontent.com/leowalker201/SITE/main/heretic.png');
-            background-size: cover;
-            background-position: center;
-            display: flex;
-            align-items: center;
-            padding: 0 50px;
-        }
-        .hero-title { font-size: 3.5rem; margin-bottom: 10px; }
-        .btn-play { padding: 12px 25px; background: #fff; color: #000; border: none; font-weight: bold; cursor: pointer; border-radius: 4px; }
-
-        /* GRID */
-        .main-container { padding: 0 50px; margin-top: -80px; position: relative; z-index: 10; }
-        .movie-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-            gap: 20px;
-            padding-bottom: 50px;
-        }
+        /* MAIN CONTENT */
+        .container { padding: 100px 50px 50px; }
+        .section-title { margin-bottom: 20px; font-size: 24px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 20px; }
 
         /* CARDS */
-        .movie-card {
-            background: #222;
-            border-radius: 4px;
-            overflow: hidden;
-            cursor: pointer;
-            transition: 0.3s;
-            position: relative;
-        }
-        .movie-card:hover { transform: scale(1.05); }
-        .movie-card img { width: 100%; aspect-ratio: 2/3; object-fit: cover; }
-        .movie-title { padding: 10px; font-size: 13px; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .card { background: var(--card-bg); border-radius: 4px; overflow: hidden; cursor: pointer; transition: 0.4s; position: relative; aspect-ratio: 2/3; }
+        .card:hover { transform: scale(1.08); z-index: 10; }
+        .card img { width: 100%; height: 100%; object-fit: cover; }
+        .card-label { position: absolute; bottom: 0; width: 100%; background: rgba(0,0,0,0.8); padding: 8px; font-size: 12px; text-align: center; }
+        .badge { position: absolute; top: 10px; right: 10px; background: var(--primary); padding: 2px 8px; border-radius: 4px; font-size: 10px; font-weight: bold; }
 
-        /* PLAYER MODAL */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.9);
-            z-index: 2000;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-        }
-        .modal-content { width: 80%; max-width: 900px; }
-        video { width: 100%; border-radius: 8px; background: #000; }
-        .close-btn { align-self: flex-end; color: white; font-size: 40px; cursor: pointer; margin-bottom: 10px; }
+        /* MODAIS */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 2000; justify-content: center; align-items: center; }
+        .modal.active { display: flex; }
+        .modal-content { background: #181818; width: 90%; max-width: 1000px; border-radius: 8px; position: relative; max-height: 90vh; overflow-y: auto; }
+        .close { position: sticky; top: 15px; left: 95%; font-size: 30px; cursor: pointer; z-index: 100; }
+
+        /* EPISODES LIST */
+        .episodes-list { padding: 20px; display: flex; flex-direction: column; gap: 10px; }
+        .episode-item { background: #333; padding: 15px; border-radius: 4px; display: flex; justify-content: space-between; cursor: pointer; }
+        .episode-item:hover { background: #444; }
+
+        video { width: 100%; border-radius: 8px 8px 0 0; }
+        
+        @media (max-width: 768px) { .navbar { padding: 15px; gap: 10px; } #search-input { width: 120px; } .container { padding: 80px 15px; } }
     </style>
 </head>
 <body>
 
     <nav class="navbar">
-        <div class="navbar-logo">BILOSOFLIX</div>
-        <input type="text" id="search-input" placeholder="O que você quer assistir?" onkeyup="filterContent()">
+        <a href="#" class="logo">BILOSOFLIX</a>
+        <ul class="nav-links">
+            <li class="active" onclick="changeTab('movie')">Filmes</li>
+            <li onclick="changeTab('series')">Séries & Animes</li>
+        </ul>
+        <input type="text" id="search-input" placeholder="Buscar..." onkeyup="filter()">
     </nav>
 
-    <section class="hero">
-        <div class="hero-content">
-            <h1 class="hero-title">HEREGE</h1>
-            <button class="btn-play" onclick="openModal('HEREGE', 'http://ban.dyn-alias.org:80/movie/FERNAND02026/678174667/1040372.mp4')">▶ ASSISTIR</button>
-        </div>
-    </section>
-
-    <div class="main-container">
-        <h2 style="margin-bottom: 20px;">Catálogo</h2>
-        <div class="movie-grid" id="catalog-grid">
-            </div>
+    <div class="container">
+        <h2 id="current-category" class="section-title">Filmes</h2>
+        <div id="main-grid" class="grid"></div>
     </div>
 
-    <div class="modal" id="playerModal">
+    <div id="seriesModal" class="modal">
         <div class="modal-content">
-            <div class="close-btn" onclick="closeModal()">&times;</div>
-            <h3 id="modal-name" style="margin-bottom: 10px;"></h3>
-            <video id="main-video" controls autoplay src=""></video>
+            <span class="close" onclick="closeModals()">&times;</span>
+            <div id="series-detail-content">
+                <h2 id="series-title" style="padding: 20px;"></h2>
+                <div id="episodes-container" class="episodes-list"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="playerModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModals()">&times;</span>
+            <video id="video-player" controls autoplay></video>
+            <div style="padding: 20px;"><h3 id="playing-title"></h3></div>
         </div>
     </div>
 
     <script>
-        // ==========================================
-        // COLE SUA LISTA M3U INTEIRA AQUI DENTRO (ENTRE AS CRASE ` `)
-        // ==========================================
-        const m3uRaw = `
+        let rawData = [];
+        let currentTab = 'movie';
+
+        // COLE SEU M3U AQUI
+        const m3uContent = `
 #EXT-X-SESSION-DATA:DATA-ID="com.xui.1_5_5r2"
 #EXTINF:-1 tvg-name="Dom Pixote S01E01" tvg-logo="" group-title="Séries | Animações e Desenhos",Dom Pixote S01E01
 http://ban.dyn-alias.org:80/series/FERNAND02026/678174667/605874.mp4
@@ -6973,65 +6937,102 @@ http://ban.dyn-alias.org:80/series/FERNAND02026/678174667/934040.mp4
 #EXTINF:-1 tvg-name="O Gato Prendado está Deprimido Hoje de Novo [L] S01E12" tvg-logo="http://timg.bdta.pro/t/p/w600_and_h900_bestv2/mc7VmEzYWnXcRRPJuLAXtrXUfI9.jpg" group-title="Séries | Animes",O Gato Prendado está Deprimido Hoje de Novo [L] S01E12
 http://ban.dyn-alias.org:80/series/FERNAND02026/678174667/934052.mp4
 
-        `; 
-        // VOCÊ PODE COLAR MILHARES DE LINHAS ACIMA
+        `;
 
-        let allContent = [];
-
-        // FUNÇÃO QUE PROCESSA O M3U AUTOMATICAMENTE
-        function parseM3U(data) {
-            const lines = data.split('\n');
+        function parseM3U() {
+            const lines = m3uContent.split('\n');
             const items = [];
             for (let i = 0; i < lines.length; i++) {
-                if (lines[i].startsWith('#EXTINF')) {
+                if (lines[i].includes('#EXTINF')) {
                     const info = lines[i];
-                    const url = lines[i + 1]?.trim();
+                    const url = lines[i+1]?.trim();
+                    const name = info.split(',')[1]?.trim();
+                    const logo = info.match(/tvg-logo="([^"]+)"/)?.[1] || "";
                     
-                    const name = info.split(',')[1] || "Sem nome";
-                    const logoMatch = info.match(/tvg-logo="([^"]+)"/);
-                    const logo = logoMatch ? logoMatch[1] : "https://via.placeholder.com/200x300?text=Sem+Capa";
-                    
-                    if(url && url.startsWith('http')) {
-                        items.push({ name, logo, url });
-                    }
+                    // Lógica para separar filme de série
+                    const isSeries = name.match(/S\d+E\d+|Temporada|Episódio/i);
+                    const baseName = isSeries ? name.split(/S\d+E\d+|Temporada/i)[0].trim() : name;
+
+                    items.push({ name, baseName, logo, url, type: isSeries ? 'series' : 'movie' });
                 }
             }
             return items;
         }
 
-        function renderGrid(items) {
-            const grid = document.getElementById('catalog-grid');
-            grid.innerHTML = items.map(item => `
-                <div class="movie-card" onclick="openModal('${item.name}', '${item.url}')">
-                    <img src="${item.logo}" alt="${item.name}">
-                    <div class="movie-title">${item.name}</div>
+        function render() {
+            const grid = document.getElementById('main-grid');
+            grid.innerHTML = '';
+            
+            const filtered = rawData.filter(item => item.type === currentTab);
+            
+            if (currentTab === 'series') {
+                // Agrupar por nome base
+                const groups = [...new Set(filtered.map(i => i.baseName))];
+                groups.forEach(groupName => {
+                    const episodes = filtered.filter(i => i.baseName === groupName);
+                    const first = episodes[0];
+                    grid.innerHTML += `
+                        <div class="card" onclick="openSeries('${groupName}')">
+                            <span class="badge">${episodes.length} Eps</span>
+                            <img src="${first.logo}" onerror="this.src='https://via.placeholder.com/200x300?text=${groupName}'">
+                            <div class="card-label">${groupName}</div>
+                        </div>`;
+                });
+            } else {
+                filtered.forEach(item => {
+                    grid.innerHTML += `
+                        <div class="card" onclick="playVideo('${item.name}', '${item.url}')">
+                            <img src="${item.logo}" onerror="this.src='https://via.placeholder.com/200x300?text=${item.name}'">
+                            <div class="card-label">${item.name}</div>
+                        </div>`;
+                });
+            }
+        }
+
+        function openSeries(baseName) {
+            const episodes = rawData.filter(i => i.baseName === baseName);
+            document.getElementById('series-title').innerText = baseName;
+            const container = document.getElementById('episodes-container');
+            container.innerHTML = episodes.map(ep => `
+                <div class="episode-item" onclick="playVideo('${ep.name}', '${ep.url}')">
+                    <span>${ep.name}</span>
+                    <span style="color: var(--primary)">▶ Assistir</span>
                 </div>
             `).join('');
+            document.getElementById('seriesModal').classList.add('active');
         }
 
-        function filterContent() {
+        function playVideo(name, url) {
+            document.getElementById('playing-title').innerText = name;
+            const player = document.getElementById('video-player');
+            player.src = url;
+            document.getElementById('playerModal').classList.add('active');
+        }
+
+        function closeModals() {
+            document.querySelectorAll('.modal').forEach(m => m.classList.remove('active'));
+            document.getElementById('video-player').pause();
+        }
+
+        function changeTab(tab) {
+            currentTab = tab;
+            document.querySelectorAll('.nav-links li').forEach(li => li.classList.remove('active'));
+            event.target.classList.add('active');
+            document.getElementById('current-category').innerText = tab === 'movie' ? 'Filmes' : 'Séries & Animes';
+            render();
+        }
+
+        function filter() {
             const query = document.getElementById('search-input').value.toLowerCase();
-            const filtered = allContent.filter(i => i.name.toLowerCase().includes(query));
-            renderGrid(filtered);
+            const cards = document.querySelectorAll('.card');
+            cards.forEach(card => {
+                const text = card.innerText.toLowerCase();
+                card.style.display = text.includes(query) ? 'block' : 'none';
+            });
         }
 
-        function openModal(name, url) {
-            document.getElementById('modal-name').innerText = name;
-            const video = document.getElementById('main-video');
-            video.src = url;
-            document.getElementById('playerModal').style.display = 'flex';
-        }
-
-        function closeModal() {
-            const video = document.getElementById('main-video');
-            video.pause();
-            video.src = "";
-            document.getElementById('playerModal').style.display = 'none';
-        }
-
-        // Iniciar
-        allContent = parseM3U(m3uRaw);
-        renderGrid(allContent);
+        rawData = parseM3U();
+        render();
     </script>
 </body>
 </html>
