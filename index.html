@@ -3,48 +3,47 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NETPLAY - IPTV</title>
+    <title>NETPLAY PRO - IPTV</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        :root { --red: #E50914; --black: #141414; --gray: #2f2f2f; --white: #e5e5e5; }
-        
-        body { font-family: 'Helvetica Neue', Arial, sans-serif; background-color: var(--black); color: var(--white); overflow-x: hidden; }
+        :root { --red: #E50914; --black: #141414; --dark: #181818; --white: #e5e5e5; }
+        body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; background-color: var(--black); color: var(--white); overflow-x: hidden; }
 
         /* NAVBAR */
-        .navbar { position: fixed; top: 0; width: 100%; height: 70px; background: linear-gradient(180deg, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0) 100%); display: flex; align-items: center; justify-content: space-between; padding: 0 4%; z-index: 1000; transition: 0.3s; }
+        .navbar { position: fixed; top: 0; width: 100%; height: 70px; background: linear-gradient(180deg, rgba(0,0,0,0.8) 0%, transparent 100%); display: flex; align-items: center; justify-content: space-between; padding: 0 4%; z-index: 1000; transition: 0.4s; }
         .navbar.scrolled { background-color: var(--black); }
-        .logo { font-size: 2rem; font-weight: bold; color: var(--red); cursor: pointer; }
-        .nav-links { display: flex; gap: 2rem; }
-        .nav-link { cursor: pointer; font-size: 0.95rem; }
-        .nav-link.active { color: var(--red); font-weight: bold; }
-        .search-input { background: rgba(0,0,0,0.5); border: 1px solid var(--gray); color: white; padding: 8px 15px; border-radius: 4px; width: 250px; }
-
-        /* HERO */
-        .hero { position: relative; height: 70vh; display: flex; align-items: center; padding: 0 4%; overflow: hidden; }
-        .hero-background { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.5; z-index: -1; }
-        .hero-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(0deg, var(--black) 0%, transparent 100%); z-index: 0; }
-        .hero-content { position: relative; z-index: 2; max-width: 600px; }
-        .hero-title { font-size: 3rem; margin-bottom: 1rem; }
-        .hero-button { background: var(--red); color: white; border: none; padding: 12px 30px; font-weight: bold; border-radius: 4px; cursor: pointer; }
+        .logo { font-size: 2.2rem; font-weight: bold; color: var(--red); letter-spacing: -1px; }
+        .nav-links { display: flex; gap: 20px; }
+        .nav-link { cursor: pointer; opacity: 0.7; transition: 0.3s; }
+        .nav-link:hover, .nav-link.active { opacity: 1; color: var(--red); }
+        .search-input { background: rgba(0,0,0,0.6); border: 1px solid #444; color: white; padding: 10px; border-radius: 4px; width: 250px; outline: none; }
 
         /* GRID */
-        .content-section { padding: 2rem 4%; margin-top: -100px; position: relative; z-index: 3; }
-        .content-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem; }
-        .content-card { position: relative; cursor: pointer; border-radius: 4px; overflow: hidden; transition: 0.3s; aspect-ratio: 2/3; background: #222; }
-        .content-card:hover { transform: scale(1.05); z-index: 10; }
-        .content-card img { width: 100%; height: 100%; object-fit: cover; }
-        .placeholder { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; text-align: center; padding: 10px; font-size: 0.8rem; background: linear-gradient(45deg, #111, #333); }
-        .series-badge { position: absolute; top: 10px; right: 10px; background: var(--red); font-size: 0.7rem; padding: 3px 6px; border-radius: 3px; }
+        .content-section { padding: 4rem 4%; margin-top: 50px; }
+        .section-title { margin-bottom: 25px; font-size: 1.5rem; }
+        .content-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 25px; }
+        
+        /* CARD */
+        .content-card { position: relative; cursor: pointer; transition: transform 0.3s ease; aspect-ratio: 2/3; border-radius: 4px; overflow: hidden; background: #111; }
+        .content-card:hover { transform: scale(1.08); z-index: 5; box-shadow: 0 10px 20px rgba(0,0,0,0.5); }
+        .content-card img { width: 100%; height: 100%; object-fit: cover; display: block; }
+        .badge { position: absolute; top: 10px; right: 10px; background: var(--red); font-size: 0.7rem; padding: 4px 8px; border-radius: 2px; font-weight: bold; }
 
         /* MODAL */
-        .modal { display: none; position: fixed; z-index: 2000; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); align-items: center; justify-content: center; }
+        .modal { display: none; position: fixed; z-index: 2000; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); align-items: center; justify-content: center; }
         .modal.show { display: flex; }
-        .modal-content { width: 90%; max-width: 1000px; background: #000; position: relative; border-radius: 8px; overflow: hidden; }
-        .close-modal { position: absolute; top: 10px; right: 20px; font-size: 2rem; cursor: pointer; z-index: 10; }
-        video { width: 100%; display: block; }
-        .video-info { padding: 20px; }
+        .modal-content { width: 95%; max-width: 1100px; background: var(--dark); border-radius: 8px; overflow: hidden; position: relative; max-height: 90vh; }
+        .close-btn { position: absolute; top: 15px; right: 20px; font-size: 2.5rem; cursor: pointer; z-index: 10; color: white; }
+        
+        .video-container { width: 100%; background: #000; }
+        video { width: 100%; max-height: 60vh; }
+        
+        .episodes-area { padding: 25px; overflow-y: auto; max-height: 300px; background: var(--dark); }
+        .episode-item { padding: 12px; background: #222; margin-bottom: 8px; border-radius: 4px; cursor: pointer; transition: 0.2s; display: flex; justify-content: space-between; }
+        .episode-item:hover { background: var(--red); }
 
-        @media (max-width: 600px) { .content-grid { grid-template-columns: repeat(2, 1fr); } .search-input { width: 120px; } }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-thumb { background: #444; border-radius: 10px; }
     </style>
 </head>
 <body>
@@ -52,42 +51,35 @@
     <nav class="navbar" id="navbar">
         <div class="logo">NETPLAY</div>
         <div class="nav-links">
-            <div class="nav-link active" data-tab="all" onclick="switchTab('all')">Início</div>
-            <div class="nav-link" data-tab="movie" onclick="switchTab('movie')">Filmes</div>
-            <div class="nav-link" data-tab="series" onclick="switchTab('series')">Séries</div>
+            <span class="nav-link active" data-type="all" onclick="filterContent('all')">Início</span>
+            <span class="nav-link" data-type="movie" onclick="filterContent('movie')">Filmes</span>
+            <span class="nav-link" data-type="series" onclick="filterContent('series')">Séries</span>
         </div>
-        <input type="text" class="search-input" id="searchInput" placeholder="Buscar..." onkeyup="searchContent()">
+        <input type="text" class="search-input" id="searchInput" placeholder="Títulos, episódios..." onkeyup="search()">
     </nav>
 
-    <section class="hero" id="hero">
-        <div class="hero-overlay"></div>
-        <div class="hero-content">
-            <h1 class="hero-title">Bem-vindo</h1>
-            <p style="margin-bottom: 20px;">Assista agora aos melhores conteúdos IPTV com qualidade premium.</p>
-            <button class="hero-button" onclick="document.getElementById('contentSection').scrollIntoView({behavior:'smooth'})">ASSISTIR AGORA</button>
-        </div>
-    </section>
+    <div class="content-section">
+        <h2 class="section-title" id="displayTitle">Destaques para Você</h2>
+        <div class="content-grid" id="mainGrid"></div>
+    </div>
 
-    <section class="content-section" id="contentSection">
-        <h2 style="margin-bottom: 20px;" id="sectionTitle">Todo o Conteúdo</h2>
-        <div class="content-grid" id="contentGrid"></div>
-    </section>
-
-    <div class="modal" id="videoModal">
+    <div class="modal" id="mediaModal">
         <div class="modal-content">
-            <span class="close-modal" onclick="closeVideoModal()">&times;</span>
-            <video id="videoPlayer" controls></video>
-            <div class="video-info">
-                <h2 id="videoTitle"></h2>
+            <span class="close-btn" onclick="closeModal()">&times;</span>
+            <div id="playerSection" style="display: none;">
+                <video id="mainVideo" controls></video>
+                <div style="padding: 20px;"><h2 id="videoTitle"></h2></div>
+            </div>
+            <div id="seriesSection" class="episodes-area">
+                <h2 id="seriesName" style="margin-bottom: 15px;"></h2>
+                <div id="episodesList"></div>
             </div>
         </div>
     </div>
 
     <script>
-        // ============================================
-        // COLE SUA LISTA M3U ABAIXO
-        // ============================================
-        const m3uContent = `
+        // ADICIONE SUA LISTA AQUI
+        const m3uRaw = `
 #EXT-X-SESSION-DATA:DATA-ID="com.xui.1_5_5r2"
 #EXTINF:-1 tvg-name="Dom Pixote S01E01" tvg-logo="" group-title="Séries | Animações e Desenhos",Dom Pixote S01E01
 http://ban.dyn-alias.org:80/series/FERNAND02026/678174667/605874.mp4
@@ -6940,109 +6932,129 @@ http://ban.dyn-alias.org:80/series/FERNAND02026/678174667/934040.mp4
 #EXTINF:-1 tvg-name="O Gato Prendado está Deprimido Hoje de Novo [L] S01E12" tvg-logo="http://timg.bdta.pro/t/p/w600_and_h900_bestv2/mc7VmEzYWnXcRRPJuLAXtrXUfI9.jpg" group-title="Séries | Animes",O Gato Prendado está Deprimido Hoje de Novo [L] S01E12
 http://ban.dyn-alias.org:80/series/FERNAND02026/678174667/934052.mp4
 
-        `.trim();
+        `;
 
-        let allData = [];
+        let catalog = []; // Tudo processado
+        let currentType = 'all';
 
-        // PARSER OTIMIZADO
-        function parseM3U(data) {
-            const items = [];
-            const lines = data.split('\n');
+        function init() {
+            const lines = m3uRaw.trim().split('\n');
+            const tempMovies = [];
+            const tempSeries = {};
+
             for (let i = 0; i < lines.length; i++) {
                 if (lines[i].startsWith('#EXTINF:')) {
-                    const line = lines[i];
+                    const info = lines[i];
                     const url = lines[i+1] ? lines[i+1].trim() : '';
                     if (!url.startsWith('http')) continue;
 
-                    const logoMatch = line.match(/tvg-logo=["']([^"']*)["']/i);
-                    const nameMatch = line.match(/,(.*)$/);
-                    
-                    items.push({
-                        name: nameMatch ? nameMatch[1].trim() : 'Sem Nome',
-                        logo: logoMatch ? logoMatch[1] : '',
-                        url: url,
-                        type: url.includes('/movie/') ? 'movie' : 'series'
-                    });
+                    // Regex forçada para o Logo
+                    const logoMatch = info.match(/tvg-logo=["']([^"']*)["']/i);
+                    const rawName = info.match(/,(.*)$/)?.[1].trim() || "Sem Nome";
+                    const logo = logoMatch ? logoMatch[1].trim() : "";
+
+                    if (url.includes('/movie/')) {
+                        tempMovies.push({ name: rawName, logo, url, type: 'movie' });
+                    } else {
+                        // Lógica de Agrupamento: Remove S01E01 etc para criar o ID da série
+                        const baseName = rawName.replace(/S\d{1,3}E\d{1,3}.*/i, '').trim();
+                        if (!tempSeries[baseName]) {
+                            tempSeries[baseName] = { name: baseName, logo, type: 'series', episodes: [] };
+                        }
+                        tempSeries[baseName].episodes.push({ title: rawName, url });
+                    }
                 }
             }
-            return items;
+            catalog = [...tempMovies, ...Object.values(tempSeries)];
+            render(catalog);
         }
 
-        // RENDERIZADOR COM CARREGAMENTO PROGRESSIVO
-        function render(items) {
-            const grid = document.getElementById('contentGrid');
+        function render(data) {
+            const grid = document.getElementById('mainGrid');
             grid.innerHTML = '';
-            
-            items.forEach(item => {
+
+            data.forEach(item => {
                 const card = document.createElement('div');
                 card.className = 'content-card';
                 
-                // Fallback de imagem: se falhar ou não existir, mostra texto
-                const imgHTML = item.logo 
-                    ? `<img src="${item.logo}" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">`
-                    : '';
-
+                // Força o carregamento da imagem. Se falhar, tenta recarregar uma vez.
                 card.innerHTML = `
-                    ${imgHTML}
-                    <div class="placeholder" style="${item.logo ? 'display:none' : 'display:flex'}">${item.name}</div>
-                    ${item.type === 'series' ? '<div class="series-badge">SÉRIE</div>' : ''}
+                    <img src="${item.logo}" alt="${item.name}" loading="lazy">
+                    <div class="badge">${item.type === 'movie' ? 'FILME' : 'SÉRIE'}</div>
                 `;
 
-                card.onclick = () => play(item.name, item.url);
+                card.onclick = () => openMedia(item);
                 grid.appendChild(card);
             });
         }
 
-        function play(title, url) {
+        function openMedia(item) {
+            const modal = document.getElementById('mediaModal');
+            const pSection = document.getElementById('playerSection');
+            const sSection = document.getElementById('seriesSection');
+            
+            modal.classList.add('show');
+
+            if (item.type === 'movie') {
+                pSection.style.display = 'block';
+                sSection.style.display = 'none';
+                startVideo(item.name, item.url);
+            } else {
+                pSection.style.display = 'none';
+                sSection.style.display = 'block';
+                document.getElementById('seriesName').textContent = item.name;
+                const list = document.getElementById('episodesList');
+                list.innerHTML = '';
+                item.episodes.forEach(ep => {
+                    const div = document.createElement('div');
+                    div.className = 'episode-item';
+                    div.innerHTML = `<span>${ep.title}</span><small>▶ Assistir</small>`;
+                    div.onclick = () => {
+                        pSection.style.display = 'block';
+                        startVideo(ep.title, ep.url);
+                    };
+                    list.appendChild(div);
+                });
+            }
+        }
+
+        function startVideo(title, url) {
+            const video = document.getElementById('mainVideo');
             document.getElementById('videoTitle').textContent = title;
-            const player = document.getElementById('videoPlayer');
-            player.src = url;
-            player.load();
-            document.getElementById('videoModal').classList.add('show');
-            player.play();
+            video.src = url;
+            video.play();
         }
 
-        function closeVideoModal() {
-            const modal = document.getElementById('videoModal');
-            const player = document.getElementById('videoPlayer');
+        function closeModal() {
+            const modal = document.getElementById('mediaModal');
+            const video = document.getElementById('mainVideo');
             modal.classList.remove('show');
-            player.pause();
-            player.src = "";
+            video.pause();
+            video.src = "";
         }
 
-        function searchContent() {
-            const term = document.getElementById('searchInput').value.toLowerCase();
-            const filtered = allData.filter(i => i.name.toLowerCase().includes(term));
-            render(filtered);
-        }
-
-        function switchTab(tab) {
+        function filterContent(type) {
+            currentType = type;
             document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-            document.querySelector(`[data-tab="${tab}"]`).classList.add('active');
-            const filtered = tab === 'all' ? allData : allData.filter(i => i.type === tab);
+            document.querySelector(`[data-type="${type}"]`).classList.add('active');
+            
+            const filtered = type === 'all' ? catalog : catalog.filter(i => i.type === type);
             render(filtered);
         }
 
-        // EFEITO NAVBAR
+        function search() {
+            const term = document.getElementById('searchInput').value.toLowerCase();
+            const filtered = catalog.filter(i => i.name.toLowerCase().includes(term));
+            render(filtered);
+        }
+
         window.onscroll = () => {
             const nav = document.getElementById('navbar');
             window.scrollY > 50 ? nav.classList.add('scrolled') : nav.classList.remove('scrolled');
         };
 
-        // INICIAR
-        window.onload = () => {
-            allData = parseM3U(m3uContent);
-            render(allData);
-            if(allData.length > 0 && allData[0].logo) {
-                const img = document.createElement('img');
-                img.src = allData[0].logo;
-                img.className = 'hero-background';
-                document.getElementById('hero').prepend(img);
-            }
-        };
-
-        // Fechar modal clicando fora
-        window.onclick = (e) => { if(e.target.id === 'videoModal') closeVideoModal(); };
+        window.onload = init;
+        window.onclick = (e) => { if(e.target.id === 'mediaModal') closeModal(); };
     </script>
 </body>
 </html>
